@@ -157,7 +157,7 @@ class CarInterface(CarInterfaceBase):
       ret.steerRatio = 18.1
       ret.centerToFront = 2.15  # measured
       tire_stiffness_factor = 1.0
-      ret.steerActuatorDelay = 0
+      ret.steerActuatorDelay = 0.1
       CarInterfaceBase.configure_torque_tune(candidate, ret.lateralTuning)
 
     elif candidate == CAR.SILVERADO:
