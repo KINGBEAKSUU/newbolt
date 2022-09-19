@@ -11,6 +11,7 @@ Ecu = car.CarParams.Ecu
 
 class CarControllerParams:
   STEER_MAX = 350  # GM limit is 3Nm. Used by carcontroller to generate LKA output
+  ##STEER_MAX = 300  # GM limit is 3Nm. Used by carcontroller to generate LKA output
   STEER_STEP = 2  # Control frames per command (50hz)
   STEER_DELTA_UP = 7  # Delta rates require review due to observed EPS weakness
   STEER_DELTA_DOWN = 17
