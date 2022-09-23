@@ -64,13 +64,13 @@ class CarState(CarStateBase):
     ret.steerFaultPermanent = self.lkas_status == 3
 
     # 1 - open, 0 - closed
-    ##ret.doorOpen = (pt_cp.vl["BCMDoorBeltStatus"]["FrontLeftDoor"] == 1 or
-    ##               pt_cp.vl["BCMDoorBeltStatus"]["FrontRightDoor"] == 1 or
-    ##               pt_cp.vl["BCMDoorBeltStatus"]["RearLeftDoor"] == 1 or
-    ##               pt_cp.vl["BCMDoorBeltStatus"]["RearRightDoor"] == 1)
+    ret.doorOpen = (pt_cp.vl["BCMDoorBeltStatus"]["FrontLeftDoor"] == 1 or
+                   pt_cp.vl["BCMDoorBeltStatus"]["FrontRightDoor"] == 1 or
+                   pt_cp.vl["BCMDoorBeltStatus"]["RearLeftDoor"] == 1 or
+                   pt_cp.vl["BCMDoorBeltStatus"]["RearRightDoor"] == 1)
 
     # 1 - latched
-    ##ret.seatbeltUnlatched = pt_cp.vl["BCMDoorBeltStatus"]["LeftSeatBelt"] == 0
+    ret.seatbeltUnlatched = pt_cp.vl["BCMDoorBeltStatus"]["LeftSeatBelt"] == 0
     ret.leftBlinker = pt_cp.vl["BCMTurnSignals"]["TurnSignals"] == 1
     ret.rightBlinker = pt_cp.vl["BCMTurnSignals"]["TurnSignals"] == 2
 
