@@ -156,7 +156,7 @@ class CarInterface(CarInterfaceBase):
       ret.mass = 1669. + STD_CARGO_KG
       ret.wheelbase = 2.63779
       ret.steerRatio = 18.09
-      ret.centerToFront = 2.50 # measured
+      ret.centerToFront = 2.34 # measured
       ##ret.centerToFront = ret.wheelbase * 0.5
       tire_stiffness_factor = 0.5
       ret.steerActuatorDelay = 0.3
