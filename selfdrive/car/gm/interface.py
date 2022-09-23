@@ -158,7 +158,7 @@ class CarInterface(CarInterfaceBase):
       ret.steerRatio = 18.09
       ret.centerToFront = 2.34 # measured
       ##ret.centerToFront = ret.wheelbase * 0.5
-      tire_stiffness_factor = 0.5
+      tire_stiffness_factor = 0.444
       ret.steerActuatorDelay = 0.3
       CarInterfaceBase.configure_torque_tune(candidate, ret.lateralTuning)
 
