@@ -99,14 +99,14 @@ class CarState(CarStateBase):
   @staticmethod
   def get_can_parser(CP):
     signals = [
-      # sig_name, sig_address
+       sig_name, sig_address
       ("BrakePedalPosition", "EBCMBrakePedalPosition"),
-      ##("FrontLeftDoor", "BCMDoorBeltStatus"),
-      ##("FrontRightDoor", "BCMDoorBeltStatus"),
-      ##("RearLeftDoor", "BCMDoorBeltStatus"),
-      ##("RearRightDoor", "BCMDoorBeltStatus"),
-      ##("LeftSeatBelt", "BCMDoorBeltStatus"),
-      ##("RightSeatBelt", "BCMDoorBeltStatus"),
+      ("FrontLeftDoor", "BCMDoorBeltStatus"),
+      ("FrontRightDoor", "BCMDoorBeltStatus"),
+      ("RearLeftDoor", "BCMDoorBeltStatus"),
+      ("RearRightDoor", "BCMDoorBeltStatus"),
+      ("LeftSeatBelt", "BCMDoorBeltStatus"),
+      ("RightSeatBelt", "BCMDoorBeltStatus"),
       ("TurnSignals", "BCMTurnSignals"),
       ("AcceleratorPedal2", "AcceleratorPedal2"),
       ("CruiseState", "AcceleratorPedal2"),
