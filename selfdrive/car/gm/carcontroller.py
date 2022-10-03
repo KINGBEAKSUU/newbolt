@@ -62,7 +62,6 @@ class CarController:
 
       #can_sends.append(gmcan.create_steering_control(self.packer_pt, CanBus.POWERTRAIN, apply_steer, idx, CC.latActive))
       #############
-        
       idx = (CS.lka_steering_cmd_counter + 1) % 4
       if idx == self.lka_last_rc_val:
          self.lka_same_rc_cnt += 1
@@ -71,7 +70,6 @@ class CarController:
         self.lka_last_rc_val = idx
 
       lkas_enabled = CC.latActive and self.lka_same_rc_cnt < 3
-      
       if lkas_enabled:
         new_steer = int(round(actuators.steer * self.params.STEER_MAX))
         apply_steer = apply_std_steer_torque_limits(new_steer, self.apply_steer_last, CS.out.steeringTorque, self.params)
@@ -79,12 +77,10 @@ class CarController:
         apply_steer = 0
 
       self.apply_steer_last = apply_steer
-      
       can_sends.append(gmcan.create_steering_control(self.packer_pt, CanBus.POWERTRAIN, apply_steer, idx, CC.latActive))
 
       ##################
-      
-    if self.CP.openpilotLongitudinalControl:
+      if self.CP.openpilotLongitudinalControl:
       # Gas/regen, brakes, and UI commands - all at 25Hz
       if self.frame % 4 == 0:
         if not CC.longActive:
