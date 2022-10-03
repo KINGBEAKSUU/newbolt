@@ -153,15 +153,14 @@ class CarInterface(CarInterfaceBase):
 
     elif candidate == CAR.BOLT_EUV:
       ret.minEnableSpeed = -1
-      ret.mass = 1600. + STD_CARGO_KG
-      ret.wheelbase = 2.78
-      ret.steerRatio = 18.1
-      ret.centerToFront = 2.3 # measured
-      ##ret.centerToFront = ret.wheelbase * 0.5
-      tire_stiffness_factor = 0.5
-      ret.steerActuatorDelay = 0.2
+      ret.mass = 1616. + STD_CARGO_KG
+      ret.wheelbase = 2.60096
+      ret.steerRatio = 18.33
+      ret.centerToFront = 2.0828
+      tire_stiffness_factor = 0.9999
+      ##ret.steerActuatorDelay = 0.2
       CarInterfaceBase.configure_torque_tune(candidate, ret.lateralTuning)
-
+      
     elif candidate == CAR.SILVERADO:
       ret.minEnableSpeed = -1
       ret.mass = 2200. + STD_CARGO_KG
