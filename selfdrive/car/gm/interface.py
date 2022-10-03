@@ -155,7 +155,7 @@ class CarInterface(CarInterfaceBase):
       ret.minEnableSpeed = -1
       ret.mass = 1616. + STD_CARGO_KG
       ret.wheelbase = 2.60096
-      ret.steerRatio = 18.33
+      ret.steerRatio = 18.499
       ret.centerToFront = 2.0828
       tire_stiffness_factor = 0.9999
       ##ret.steerActuatorDelay = 0.2
