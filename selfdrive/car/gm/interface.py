@@ -73,7 +73,7 @@ class CarInterface(CarInterfaceBase):
     ret.dashcamOnly = candidate in {CAR.CADILLAC_ATS, CAR.HOLDEN_ASTRA, CAR.MALIBU, CAR.BUICK_REGAL}
 
     # Start with a baseline tuning for all GM vehicles. Override tuning as needed in each model section below.
-    ret.minSteerSpeed = 10.1 * CV.MPH_TO_MS
+    ret.minSteerSpeed = 11 * CV.MPH_TO_MS
     ###ret.minSteerSpeed = 11 * CV.MPH_TO_MS
     ret.lateralTuning.pid.kiBP, ret.lateralTuning.pid.kpBP = [[0.], [0.]]
     ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.2], [0.00]]
@@ -155,9 +155,9 @@ class CarInterface(CarInterfaceBase):
       ret.minEnableSpeed = -1
       ret.mass = 1616. + STD_CARGO_KG
       ret.wheelbase = 2.60096
-      ret.steerRatio = 18.751876
+      ret.steerRatio = 18.951876
       ret.centerToFront = 2.0828
-      tire_stiffness_factor = 1.0
+      tire_stiffness_factor = 0.999
       ##ret.steerActuatorDelay = 0.2
       CarInterfaceBase.configure_torque_tune(candidate, ret.lateralTuning)
       
