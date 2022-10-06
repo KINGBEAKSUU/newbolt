@@ -73,7 +73,7 @@ class CarInterface(CarInterfaceBase):
     ret.dashcamOnly = candidate in {CAR.CADILLAC_ATS, CAR.HOLDEN_ASTRA, CAR.MALIBU, CAR.BUICK_REGAL}
 
     # Start with a baseline tuning for all GM vehicles. Override tuning as needed in each model section below.
-    ret.minSteerSpeed = 10.1 * CV.MPH_TO_MS
+    ret.minSteerSpeed = 7 * CV.MPH_TO_MS
     ###ret.minSteerSpeed = 11 * CV.MPH_TO_MS
     ret.lateralTuning.pid.kiBP, ret.lateralTuning.pid.kpBP = [[0.], [0.]]
     ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.2], [0.00]]
