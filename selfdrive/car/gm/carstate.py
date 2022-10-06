@@ -42,8 +42,8 @@ class CarState(CarStateBase):
       ret.gearShifter = self.parse_gear_shifter(self.shifter_values.get(pt_cp.vl["ECMPRDNL2"]["PRNDL2"], None))
 
     # Brake pedal's potentiometer returns near-zero reading even when pedal is not pressed.
-    ret.brake = pt_cp.vl["EBCMBrakePedalPosition"]["BrakePedalPosition"] / 0xd0
-    ret.brakePressed = pt_cp.vl["EBCMBrakePedalPosition"]["BrakePedalPosition"] >= 10
+    ret.brake = pt_cp.vl["ECMAcceleratorPos"]["BrakePedalPos"] / 0xd0
+    ret.brakePressed = pt_cp.vl["ECMAcceleratorPos"]["BrakePedalPos"] >= 8
 
     # Regen braking is braking
     if self.CP.transmissionType == TransmissionType.direct:
@@ -112,7 +112,7 @@ class CarState(CarStateBase):
   def get_can_parser(CP):
     signals = [
        # sig_name, sig_address
-      ("BrakePedalPosition", "EBCMBrakePedalPosition"),
+      ("BrakePedalPos", "ECMAcceleratorPos"),
       ("FrontLeftDoor", "BCMDoorBeltStatus"),
       ("FrontRightDoor", "BCMDoorBeltStatus"),
       ("RearLeftDoor", "BCMDoorBeltStatus"),
@@ -153,7 +153,7 @@ class CarState(CarStateBase):
       ("ASCMSteeringButton", 33),
       ("ECMEngineStatus", 100),
       ("PSCMSteeringAngle", 100),
-      ("EBCMBrakePedalPosition", 100),
+      ("ECMAcceleratorPos", 80),
     ]
 
     if CP.transmissionType == TransmissionType.direct:
