@@ -18,7 +18,7 @@ class CarState(CarStateBase):
     self.lka_steering_cmd_counter = 0
     self.buttons_counter = 0
     ##self.acc_faulted_frames = 0
-    self.lkas_steering_cmd_updated = False
+    #####self.lkas_steering_cmd_updated = False
 
   def update(self, pt_cp, cam_cp, loopback_cp):
     ret = car.CarState.new_message()
@@ -89,19 +89,8 @@ class CarState(CarStateBase):
     ret.parkingBrake = pt_cp.vl["VehicleIgnitionAlt"]["ParkBrake"] == 1
     ret.cruiseState.available = pt_cp.vl["ECMEngineStatus"]["CruiseMainOn"] != 0
     ret.espDisabled = pt_cp.vl["ESPStatus"]["TractionControlOn"] != 1
-    ###ret.accFaulted = pt_cp.vl["AcceleratorPedal2"]["CruiseState"] == AccState.FAULTED
+    ret.accFaulted = pt_cp.vl["AcceleratorPedal2"]["CruiseState"] == AccState.FAULTED
 
-    ###################
-    if pt_cp.vl["AcceleratorPedal2"]["CruiseState"] == AccState.FAULTED:
-      self.acc_faulted_frames += 1
-    else:
-      # GM uses the FAULTED state in AcceleratorPedal2->CruiseState for genuine ACC faults
-      # as well as soft disables with full longitudinal actuation (tries to brake to a stop).
-      # Set accFaulted if state is FAULTED less than 10 frames (immediate disable)
-      ret.accFaulted = 0 < self.acc_faulted_frames <= 10
-      self.acc_faulted_frames = 0
-    #####################
-    
     ret.cruiseState.enabled = pt_cp.vl["AcceleratorPedal2"]["CruiseState"] != AccState.OFF
     ret.cruiseState.standstill = pt_cp.vl["AcceleratorPedal2"]["CruiseState"] == AccState.STANDSTILL
     if self.CP.networkLocation == NetworkLocation.fwdCamera:
@@ -193,11 +182,10 @@ class CarState(CarStateBase):
     ]
 
     checks = [
-      ###("ASCMLKASteeringCmd", 10), # 10 Hz is the stock inactive rate (every 100ms).
       ("ASCMLKASteeringCmd", 0), # 1 Hz is the stock inactive rate (every 1000ms).
       #                             While active 50 Hz (every 20 ms) is normal
       #                             EPS will tolerate around 200ms when active before faulting
     ]
 
-    ##return CANParser(DBC[CP.carFingerprint]["pt"], signals, checks, CanBus.LOOPBACK)
-    return CANParser(DBC[CP.carFingerprint]["pt"], signals, checks, CanBus.LOOPBACK, enforce_checks = False)
+    return CANParser(DBC[CP.carFingerprint]["pt"], signals, checks, CanBus.LOOPBACK)
+    #####return CANParser(DBC[CP.carFingerprint]["pt"], signals, checks, CanBus.LOOPBACK, enforce_checks = False)
