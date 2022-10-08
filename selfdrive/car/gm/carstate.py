@@ -58,17 +58,17 @@ class CarState(CarStateBase):
     ret.steeringTorque = pt_cp.vl["PSCMStatus"]["LKADriverAppldTrq"]
     ret.steeringTorqueEps = pt_cp.vl["PSCMStatus"]["LKATorqueDelivered"]
     ret.steeringPressed = abs(ret.steeringTorque) > STEER_THRESHOLD
-    ##self.lka_steering_cmd_counter = loopback_cp.vl["ASCMLKASteeringCmd"]["RollingCounter"]
-    
+    #####self.lka_steering_cmd_counter = loopback_cp.vl["ASCMLKASteeringCmd"]["RollingCounter"]
+    self.lka_steering_cmd_counter = loopback_cp.vl["ASCMLKASteeringCmd"]["RollingCounter"]
     
     # TODO: this should really be handled in CC
-    if len(loopback_cp.vl_all["ASCMLKASteeringCmd"]):
-      self.lkas_steering_cmd_updated = True
+    #####if len(loopback_cp.vl_all["ASCMLKASteeringCmd"]):
+    #####  self.lkas_steering_cmd_updated = True
 
-    if not self.lkas_steering_cmd_updated and self.CP.networkLocation == NetworkLocation.fwdCamera:
-      self.lka_steering_cmd_counter = cam_cp.vl["ASCMLKASteeringCmd"]["RollingCounter"]
-    else:
-      self.lka_steering_cmd_counter = loopback_cp.vl["ASCMLKASteeringCmd"]["RollingCounter"]
+    #####if not self.lkas_steering_cmd_updated and self.CP.networkLocation == NetworkLocation.fwdCamera:
+    #####  self.lka_steering_cmd_counter = cam_cp.vl["ASCMLKASteeringCmd"]["RollingCounter"]
+    #####else:
+    #####  self.lka_steering_cmd_counter = loopback_cp.vl["ASCMLKASteeringCmd"]["RollingCounter"]
 
     # 0 inactive, 1 active, 2 temporarily limited, 3 failed
     self.lkas_status = pt_cp.vl["PSCMStatus"]["LKATorqueDeliveredStatus"]
@@ -117,6 +117,8 @@ class CarState(CarStateBase):
     signals = []
     checks = []
     if CP.networkLocation == NetworkLocation.fwdCamera:
+      #####signals.append(("ACCSpeedSetpoint", "ASCMActiveCruiseControlStatus"))
+      #####checks.append(("ASCMActiveCruiseControlStatus", 25))
       signals.append(("ACCSpeedSetpoint", "ASCMActiveCruiseControlStatus"))
       checks.append(("ASCMActiveCruiseControlStatus", 25))
       #####signals += [
