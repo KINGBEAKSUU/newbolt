@@ -107,8 +107,6 @@ class CarState(CarStateBase):
     if CP.networkLocation == NetworkLocation.fwdCamera:
       #######signals.append(("ACCSpeedSetpoint", "ASCMActiveCruiseControlStatus"))
       #######checks.append(("ASCMActiveCruiseControlStatus", 25))
-      signals.append(("ACCSpeedSetpoint", "ASCMActiveCruiseControlStatus"))
-      checks.append(("ASCMActiveCruiseControlStatus", 25))
       signals += [
         ("ACCSpeedSetpoint", "ASCMActiveCruiseControlStatus"),
         ("FCWAlert", "ASCMActiveCruiseControlStatus"),
