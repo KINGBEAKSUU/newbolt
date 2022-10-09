@@ -18,7 +18,7 @@ class CarState(CarStateBase):
     self.lka_steering_cmd_counter = 0
     self.buttons_counter = 0
     ##self.acc_faulted_frames = 0
-    #####self.lkas_steering_cmd_updated = False
+    self.lkas_steering_cmd_updated = False
 
   def update(self, pt_cp, cam_cp, loopback_cp):
     ret = car.CarState.new_message()
@@ -58,17 +58,16 @@ class CarState(CarStateBase):
     ret.steeringTorque = pt_cp.vl["PSCMStatus"]["LKADriverAppldTrq"]
     ret.steeringTorqueEps = pt_cp.vl["PSCMStatus"]["LKATorqueDelivered"]
     ret.steeringPressed = abs(ret.steeringTorque) > STEER_THRESHOLD
-    #####self.lka_steering_cmd_counter = loopback_cp.vl["ASCMLKASteeringCmd"]["RollingCounter"]
-    self.lka_steering_cmd_counter = loopback_cp.vl["ASCMLKASteeringCmd"]["RollingCounter"]
+    #######self.lka_steering_cmd_counter = loopback_cp.vl["ASCMLKASteeringCmd"]["RollingCounter"]
     
     # TODO: this should really be handled in CC
-    #####if len(loopback_cp.vl_all["ASCMLKASteeringCmd"]):
-    #####  self.lkas_steering_cmd_updated = True
+    if len(loopback_cp.vl_all["ASCMLKASteeringCmd"]):
+      self.lkas_steering_cmd_updated = True
 
-    #####if not self.lkas_steering_cmd_updated and self.CP.networkLocation == NetworkLocation.fwdCamera:
-    #####  self.lka_steering_cmd_counter = cam_cp.vl["ASCMLKASteeringCmd"]["RollingCounter"]
-    #####else:
-    #####  self.lka_steering_cmd_counter = loopback_cp.vl["ASCMLKASteeringCmd"]["RollingCounter"]
+    if not self.lkas_steering_cmd_updated and self.CP.networkLocation == NetworkLocation.fwdCamera:
+      self.lka_steering_cmd_counter = cam_cp.vl["ASCMLKASteeringCmd"]["RollingCounter"]
+    else:
+      self.lka_steering_cmd_counter = loopback_cp.vl["ASCMLKASteeringCmd"]["RollingCounter"]
 
     # 0 inactive, 1 active, 2 temporarily limited, 3 failed
     self.lkas_status = pt_cp.vl["PSCMStatus"]["LKATorqueDeliveredStatus"]
@@ -96,8 +95,8 @@ class CarState(CarStateBase):
     if self.CP.networkLocation == NetworkLocation.fwdCamera:
       ret.cruiseState.speed = cam_cp.vl["ASCMActiveCruiseControlStatus"]["ACCSpeedSetpoint"] * CV.KPH_TO_MS
       
-      #####ret.stockFcw = cam_cp.vl["ASCMActiveCruiseControlStatus"]["FCWAlert"] != 0
-      #####ret.stockFcw = cam_cp.vl["AEBCmd"]["AEBCmdActive"] != 0
+      ret.stockFcw = cam_cp.vl["ASCMActiveCruiseControlStatus"]["FCWAlert"] != 0
+      ret.stockFcw = cam_cp.vl["AEBCmd"]["AEBCmdActive"] != 0
 
     return ret
 
@@ -106,19 +105,19 @@ class CarState(CarStateBase):
     signals = []
     checks = []
     if CP.networkLocation == NetworkLocation.fwdCamera:
-      #####signals.append(("ACCSpeedSetpoint", "ASCMActiveCruiseControlStatus"))
-      #####checks.append(("ASCMActiveCruiseControlStatus", 25))
+      #######signals.append(("ACCSpeedSetpoint", "ASCMActiveCruiseControlStatus"))
+      #######checks.append(("ASCMActiveCruiseControlStatus", 25))
       signals.append(("ACCSpeedSetpoint", "ASCMActiveCruiseControlStatus"))
       checks.append(("ASCMActiveCruiseControlStatus", 25))
-      #####signals += [
-      #####  ("ACCSpeedSetpoint", "ASCMActiveCruiseControlStatus"),
-      #####  ("FCWAlert", "ASCMActiveCruiseControlStatus"),
-      #####  ("AEBCmdActive", "AEBCmd"),
-      #####]
-      #####checks += [
-      #####  ("ASCMActiveCruiseControlStatus", 25),
-      #####  ("AEBCmd", 10),
-      #####]
+      signals += [
+        ("ACCSpeedSetpoint", "ASCMActiveCruiseControlStatus"),
+        ("FCWAlert", "ASCMActiveCruiseControlStatus"),
+        ("AEBCmdActive", "AEBCmd"),
+      ]
+      checks += [
+        ("ASCMActiveCruiseControlStatus", 25),
+        ("AEBCmd", 10),
+      ]
     return CANParser(DBC[CP.carFingerprint]["pt"], signals, checks, CanBus.CAMERA)
 
   @staticmethod
