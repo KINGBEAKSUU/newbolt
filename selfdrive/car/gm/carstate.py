@@ -164,10 +164,10 @@ class CarState(CarStateBase):
     ]
 
     checks = [
-      ("ASCMLKASteeringCmd", 0), # 1 Hz is the stock inactive rate (every 1000ms).
+      ("ASCMLKASteeringCmd", 10), # 1 Hz is the stock inactive rate (every 1000ms).
       #                             While active 50 Hz (every 20 ms) is normal
       #                             EPS will tolerate around 200ms when active before faulting
     ]
 
     return CANParser(DBC[CP.carFingerprint]["pt"], signals, checks, CanBus.LOOPBACK)
-    #####return CANParser(DBC[CP.carFingerprint]["pt"], signals, checks, CanBus.LOOPBACK, enforce_checks = False)
+    
