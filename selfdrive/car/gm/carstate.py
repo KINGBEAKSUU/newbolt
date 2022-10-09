@@ -58,7 +58,7 @@ class CarState(CarStateBase):
     ret.steeringTorque = pt_cp.vl["PSCMStatus"]["LKADriverAppldTrq"]
     ret.steeringTorqueEps = pt_cp.vl["PSCMStatus"]["LKATorqueDelivered"]
     ret.steeringPressed = abs(ret.steeringTorque) > STEER_THRESHOLD
-    #####self.lka_steering_cmd_counter = loopback_cp.vl["ASCMLKASteeringCmd"]["RollingCounter"]
+    self.lka_steering_cmd_counter = loopback_cp.vl["ASCMLKASteeringCmd"]["RollingCounter"]
     
     # TODO: this should really be handled in CC
     ##if len(loopback_cp.vl_all["ASCMLKASteeringCmd"]):
@@ -105,16 +105,16 @@ class CarState(CarStateBase):
     signals = []
     checks = []
     if CP.networkLocation == NetworkLocation.fwdCamera:
-      ##signals.append(("ACCSpeedSetpoint", "ASCMActiveCruiseControlStatus"))
-      ##checks.append(("ASCMActiveCruiseControlStatus", 25))
-      signals += [
-        ("RollingCounter", "ASCMLKASteeringCmd"),
-        ("ACCSpeedSetpoint", "ASCMActiveCruiseControlStatus"),
-      ]
-      checks += [
-        ("ASCMLKASteeringCmd", 10),
-        ("ASCMActiveCruiseControlStatus", 25),
-      ]
+      signals.append(("ACCSpeedSetpoint", "ASCMActiveCruiseControlStatus"))
+      checks.append(("ASCMActiveCruiseControlStatus", 25))
+      ##signals += [
+        ##("RollingCounter", "ASCMLKASteeringCmd"),
+        ##("ACCSpeedSetpoint", "ASCMActiveCruiseControlStatus"),
+      ##]
+      ##checks += [
+        ##("ASCMLKASteeringCmd", 10),
+        ##("ASCMActiveCruiseControlStatus", 25),
+      ##]
     return CANParser(DBC[CP.carFingerprint]["pt"], signals, checks, CanBus.CAMERA)
 
   @staticmethod
