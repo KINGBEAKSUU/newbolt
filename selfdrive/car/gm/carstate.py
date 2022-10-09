@@ -68,7 +68,7 @@ class CarState(CarStateBase):
       self.lka_steering_cmd_counter = cam_cp.vl["ASCMLKASteeringCmd"]["RollingCounter"]
     else:
       self.lka_steering_cmd_counter = loopback_cp.vl["ASCMLKASteeringCmd"]["RollingCounter"]
-
+      
     # 0 inactive, 1 active, 2 temporarily limited, 3 failed
     self.lkas_status = pt_cp.vl["PSCMStatus"]["LKATorqueDeliveredStatus"]
     ret.steerFaultTemporary = self.lkas_status == 2
@@ -108,13 +108,12 @@ class CarState(CarStateBase):
       #######signals.append(("ACCSpeedSetpoint", "ASCMActiveCruiseControlStatus"))
       #######checks.append(("ASCMActiveCruiseControlStatus", 25))
       signals += [
+        ("RollingCounter", "ASCMLKASteeringCmd"),
         ("ACCSpeedSetpoint", "ASCMActiveCruiseControlStatus"),
-        ("FCWAlert", "ASCMActiveCruiseControlStatus"),
-        ("AEBCmdActive", "AEBCmd"),
       ]
       checks += [
+        ("ASCMLKASteeringCmd", 10),
         ("ASCMActiveCruiseControlStatus", 25),
-        ("AEBCmd", 10),
       ]
     return CANParser(DBC[CP.carFingerprint]["pt"], signals, checks, CanBus.CAMERA)
 
