@@ -38,7 +38,7 @@ def get_torque_params(candidate):
   with open(TORQUE_OVERRIDE_PATH) as f:
     override = yaml.load(f, Loader=yaml.Loader)
 
-  # Ensure no overlap
+  #@ Ensure no overlap
   if sum([candidate in x for x in [sub, params, override]]) > 1:
     raise RuntimeError(f'{candidate} is defined twice in torque config')
 
