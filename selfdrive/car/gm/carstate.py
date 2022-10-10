@@ -47,7 +47,7 @@ class CarState(CarStateBase):
     ret.brake = pt_cp.vl["ECMAcceleratorPos"]["BrakePedalPos"] / 0xd0
     ret.brakePressed = pt_cp.vl["ECMAcceleratorPos"]["BrakePedalPos"] >= 8
 
-    # Regen braking is braking
+    ## Regen braking is braking
     if self.CP.transmissionType == TransmissionType.direct:
       ret.brakePressed = ret.brakePressed or pt_cp.vl["EBCMRegenPaddle"]["RegenPaddle"] != 0
 
