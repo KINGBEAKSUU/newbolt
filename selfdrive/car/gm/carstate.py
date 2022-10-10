@@ -60,11 +60,12 @@ class CarState(CarStateBase):
     ret.steeringTorqueEps = pt_cp.vl["PSCMStatus"]["LKATorqueDelivered"]
     ret.steeringPressed = abs(ret.steeringTorque) > STEER_THRESHOLD
 
+    # Variables used for avoiding faults in the EPS by gm/carcontroller.py
     self.loopback_lka_steering_cmd_updated = len(loopback_cp.vl_all["ASCMLKASteeringCmd"]) > 0
     self.loopback_lka_steering_cmd_blocked = len(blocked_cp.vl_all["ASCMLKASteeringCmd"]) > 0
     if self.CP.networkLocation == NetworkLocation.fwdCamera:
       self.camera_lka_steering_cmd_counter = cam_cp.vl["ASCMLKASteeringCmd"]["RollingCounter"]
-
+    
     # 0 inactive, 1 active, 2 temporarily limited, 3 failed
     self.lkas_status = pt_cp.vl["PSCMStatus"]["LKATorqueDeliveredStatus"]
     ret.steerFaultTemporary = self.lkas_status == 2
@@ -106,6 +107,7 @@ class CarState(CarStateBase):
         ("ASCMLKASteeringCmd", 10),
         ("ASCMActiveCruiseControlStatus", 25),
       ]
+    
     return CANParser(DBC[CP.carFingerprint]["pt"], signals, checks, CanBus.CAMERA)
 
   @staticmethod
