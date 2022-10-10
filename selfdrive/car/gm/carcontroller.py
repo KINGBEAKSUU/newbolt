@@ -22,8 +22,6 @@ class CarController:
     self.last_button_frame = 0
 
     self.lka_steering_cmd_counter = 0
-    self.lka_last_rc_val = -1
-    self.lka_same_rc_cnt = 0
     self.lka_icon_status_last = (False, False)
 
     self.params = CarControllerParams()
