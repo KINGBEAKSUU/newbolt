@@ -42,6 +42,9 @@ class CarController:
     can_sends = []
 
     # Steering (50Hz)
+    # Avoid GM EPS faults when transmitting messages too close together:
+    # skip this transmit if we just received a Panda loopback confirmation
+
     # Initialize ASCMLKASteeringCmd counter using the camera
     if self.frame == 0 and self.CP.networkLocation == NetworkLocation.fwdCamera:
       self.lka_steering_cmd_counter = CS.camera_lka_steering_cmd_counter + 1
@@ -63,7 +66,7 @@ class CarController:
         self.lka_steering_cmd_counter += 1
 
         can_sends.append(gmcan.create_steering_control(self.packer_pt, CanBus.POWERTRAIN, apply_steer, idx, CC.latActive))
-
+    
     if self.CP.openpilotLongitudinalControl:
       # Gas/regen, brakes, and UI commands - all at 25Hz
       if self.frame % 4 == 0:
