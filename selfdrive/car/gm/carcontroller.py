@@ -45,14 +45,15 @@ class CarController:
     # Avoid GM EPS faults when transmitting messages too close together:
     # skip this transmit if we just received a Panda loopback confirmation
 
-    ##if self.frame == 0 and self.CP.networkLocation == NetworkLocation.fwdCamera:
-    ##  self.lka_steering_cmd_counter = CS.camera_lka_steering_cmd_counter + 1
-    ##if CS.loopback_lka_steering_cmd_blocked:
-    ##  self.lka_steering_cmd_counter -= 1
+    # Initialize ASCMLKASteeringCmd counter using the camera
+    if self.frame == 0 and self.CP.networkLocation == NetworkLocation.fwdCamera:
+      self.lka_steering_cmd_counter = CS.camera_lka_steering_cmd_counter + 1
 
-    
-    ##if self.frame % self.params.STEER_STEP == 0:
-    if self.frame % self.params.STEER_STEP == 0 and self.frame != 0:
+    # If panda blocks a single message, re-transmit the previous counter
+    if CS.loopback_lka_steering_cmd_blocked:
+      self.lka_steering_cmd_counter -= 1
+
+    if self.frame % self.params.STEER_STEP == 0:
       if not CS.loopback_lka_steering_cmd_updated:
         if CC.latActive:
           new_steer = int(round(actuators.steer * self.params.STEER_MAX))
