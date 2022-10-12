@@ -22,6 +22,8 @@ class CarController:
     self.last_button_frame = 0
 
     self.lka_steering_cmd_counter = 0
+    self.lka_last_rc_val = -1
+    self.lka_same_rc_cnt = 0
     self.lka_icon_status_last = (False, False)
 
     self.params = CarControllerParams()
@@ -42,25 +44,21 @@ class CarController:
     can_sends = []
 
     # Steering (50Hz)
-
-    # Initialize ASCMLKASteeringCmd counter using the camera
-    if self.frame == 0 and self.CP.networkLocation == NetworkLocation.fwdCamera:
-      self.lka_steering_cmd_counter = CS.camera_lka_steering_cmd_counter
-
     # Avoid GM EPS faults when transmitting messages too close together: skip this transmit if we just received the
     # next Panda loopback confirmation in the current CS frame.
-    if CS.loopback_lka_steering_cmd_updated:
-      self.lka_steering_cmd_counter += 1
-    elif (self.frame % self.params.STEER_STEP) == 0:
-      if CC.latActive:
-        new_steer = int(round(actuators.steer * self.params.STEER_MAX))
-        apply_steer = apply_std_steer_torque_limits(new_steer, self.apply_steer_last, CS.out.steeringTorque, self.params)
-      else:
-        apply_steer = 0
+    if self.frame % self.params.STEER_STEP == 0 and self.frame != 0:
+      if not CS.loopback_lka_steering_cmd_updated:
+        if CC.latActive:
+          new_steer = int(round(actuators.steer * self.params.STEER_MAX))
+          apply_steer = apply_std_steer_torque_limits(new_steer, self.apply_steer_last, CS.out.steeringTorque, self.params)
+        else:
+          apply_steer = 0
 
-      self.apply_steer_last = apply_steer
-      idx = self.lka_steering_cmd_counter % 4
-      can_sends.append(gmcan.create_steering_control(self.packer_pt, CanBus.POWERTRAIN, apply_steer, idx, CC.latActive))
+        self.apply_steer_last = apply_steer
+        self.lka_steering_cmd_counter += 1
+        idx = self.lka_steering_cmd_counter % 4
+
+        can_sends.append(gmcan.create_steering_control(self.packer_pt, CanBus.POWERTRAIN, apply_steer, idx, CC.latActive))
 
     if self.CP.openpilotLongitudinalControl:
       # Gas/regen, brakes, and UI commands - all at 25Hz
