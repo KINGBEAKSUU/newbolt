@@ -18,6 +18,7 @@ class CarState(CarStateBase):
     self.loopback_lka_steering_cmd_updated = False
     self.camera_lka_steering_cmd_counter = 0
     self.buttons_counter = 0
+    
 
   def update(self, pt_cp, cam_cp, loopback_cp):
     ret = car.CarState.new_message()
@@ -30,7 +31,7 @@ class CarState(CarStateBase):
     self.loopback_lka_steering_cmd_updated = len(loopback_cp.vl_all["ASCMLKASteeringCmd"]) > 0
     if self.CP.networkLocation == NetworkLocation.fwdCamera:
       self.camera_lka_steering_cmd_counter = cam_cp.vl["ASCMLKASteeringCmd"]["RollingCounter"]
-
+    
     ret.wheelSpeeds = self.get_wheel_speeds(
       pt_cp.vl["EBCMWheelSpdFront"]["FLWheelSpd"],
       pt_cp.vl["EBCMWheelSpdFront"]["FRWheelSpd"],
@@ -46,10 +47,7 @@ class CarState(CarStateBase):
     else:
       ret.gearShifter = self.parse_gear_shifter(self.shifter_values.get(pt_cp.vl["ECMPRDNL2"]["PRNDL2"], None))
 
-    # Some Volt 2016-17 have loose brake pedal push rod retainers which causes the ECM to believe
-    # that the brake is being intermittently pressed without user interaction.
-    # To avoid a cruise fault we need to match the ECM's brake pressed signal and threshold
-    # https://static.nhtsa.gov/odi/tsbs/2017/MC-10137629-9999.pdf
+    # Brake pedal's potentiometer returns near-zero reading even when pedal is not pressed.
     ret.brake = pt_cp.vl["ECMAcceleratorPos"]["BrakePedalPos"] / 0xd0
     ret.brakePressed = pt_cp.vl["ECMAcceleratorPos"]["BrakePedalPos"] >= 8
 
@@ -65,6 +63,8 @@ class CarState(CarStateBase):
     ret.steeringTorque = pt_cp.vl["PSCMStatus"]["LKADriverAppldTrq"]
     ret.steeringTorqueEps = pt_cp.vl["PSCMStatus"]["LKATorqueDelivered"]
     ret.steeringPressed = abs(ret.steeringTorque) > STEER_THRESHOLD
+    #####self.lka_steering_cmd_counter = loopback_cp.vl["ASCMLKASteeringCmd"]["RollingCounter"]
+    self.loopback_lka_steering_cmd_updated = len(loopback_cp.vl_all["ASCMLKASteeringCmd"]) > 0
 
     # 0 inactive, 1 active, 2 temporarily limited, 3 failed
     self.lkas_status = pt_cp.vl["PSCMStatus"]["LKATorqueDeliveredStatus"]
@@ -91,7 +91,7 @@ class CarState(CarStateBase):
     ret.cruiseState.standstill = pt_cp.vl["AcceleratorPedal2"]["CruiseState"] == AccState.STANDSTILL
     if self.CP.networkLocation == NetworkLocation.fwdCamera:
       ret.cruiseState.speed = cam_cp.vl["ASCMActiveCruiseControlStatus"]["ACCSpeedSetpoint"] * CV.KPH_TO_MS
-
+          
     return ret
 
   @staticmethod
@@ -107,13 +107,12 @@ class CarState(CarStateBase):
         ("ASCMLKASteeringCmd", 10),
         ("ASCMActiveCruiseControlStatus", 25),
       ]
-
     return CANParser(DBC[CP.carFingerprint]["pt"], signals, checks, CanBus.CAMERA)
 
   @staticmethod
   def get_can_parser(CP):
     signals = [
-      # sig_name, sig_address
+       # sig_name, sig_address
       ("BrakePedalPos", "ECMAcceleratorPos"),
       ("FrontLeftDoor", "BCMDoorBeltStatus"),
       ("FrontRightDoor", "BCMDoorBeltStatus"),
@@ -171,9 +170,10 @@ class CarState(CarStateBase):
     ]
 
     checks = [
-      ("ASCMLKASteeringCmd", 10), # 10 Hz is the stock inactive rate (every 100ms).
+      ("ASCMLKASteeringCmd", 0), # 1 Hz is the stock inactive rate (every 1000ms).
       #                             While active 50 Hz (every 20 ms) is normal
       #                             EPS will tolerate around 200ms when active before faulting
     ]
 
-    return CANParser(DBC[CP.carFingerprint]["pt"], signals, checks, CanBus.LOOPBACK)
+    return CANParser(DBC[CP.carFingerprint]["pt"], signals, checks, CanBus.LOOPBACK, enforce_checks = False)
+    ###return CANParser(DBC[CP.carFingerprint]["pt"], signals, checks, CanBus.LOOPBACK)
