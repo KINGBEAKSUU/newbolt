@@ -9,7 +9,6 @@ from selfdrive.car.gm.values import DBC, AccState, CanBus, STEER_THRESHOLD
 TransmissionType = car.CarParams.TransmissionType
 NetworkLocation = car.CarParams.NetworkLocation
 
-
 class CarState(CarStateBase):
   def __init__(self, CP):
     super().__init__(CP)
@@ -47,7 +46,10 @@ class CarState(CarStateBase):
     else:
       ret.gearShifter = self.parse_gear_shifter(self.shifter_values.get(pt_cp.vl["ECMPRDNL2"]["PRNDL2"], None))
 
-    # Brake pedal's potentiometer returns near-zero reading even when pedal is not pressed.
+    # Some Volt 2016-17 have loose brake pedal push rod retainers which causes the ECM to believe
+    # that the brake is being intermittently pressed without user interaction.
+    # To avoid a cruise fault we need to match the ECM's brake pressed signal and threshold
+    # https://static.nhtsa.gov/odi/tsbs/2017/MC-10137629-9999.pdf
     ret.brake = pt_cp.vl["ECMAcceleratorPos"]["BrakePedalPos"] / 0xd0
     ret.brakePressed = pt_cp.vl["ECMAcceleratorPos"]["BrakePedalPos"] >= 8
 
