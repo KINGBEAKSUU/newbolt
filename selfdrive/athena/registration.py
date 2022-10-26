@@ -100,9 +100,9 @@ def register(show_spinner=False) -> Optional[str]:
 
   if dongle_id:
     params.put("DongleId", dongle_id)
-    set_offroad_alert("Offroad_UnofficialHardware", (dongle_id == UNREGISTERED_DONGLE_ID) and not PC)
+    ##set_offroad_alert("Offroad_UnofficialHardware", (dongle_id == UNREGISTERED_DONGLE_ID) and not PC)
+    set_offroad_alert("Offroad_UnofficialHardware",False)
   return dongle_id
-
 
 if __name__ == "__main__":
   print(register())
