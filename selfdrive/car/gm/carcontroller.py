@@ -41,20 +41,7 @@ class CarController:
 
     # Send CAN commands.
     can_sends = []
-    
-    ###########
-    # Steering (50Hz)
-    # Initialize ASCMLKASteeringCmd counter using the camera
-    ##if self.frame == 0 and self.CP.networkLocation == NetworkLocation.fwdCamera:
-    ##  self.lka_steering_cmd_counter = CS.camera_lka_steering_cmd_counter
-
-    # Avoid GM EPS faults when transmitting messages too close together: skip this transmit if we just received the
-    # next Panda loopback confirmation in the current CS frame.
-    ##if CS.loopback_lka_steering_cmd_updated:
-    ##  self.lka_steering_cmd_counter += 1
-    ##elif (self.frame % self.params.STEER_STEP) == 0:
-    ###############   
-    
+   
     # Steering (50Hz)
     # Avoid GM EPS faults when transmitting messages too close together: skip this transmit if we just received the
     # next Panda loopback confirmation in the current CS frame.
